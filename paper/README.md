@@ -147,5 +147,70 @@ thay đổi x để thông tin của các token đặc biệt không bị lẫn 
 
 ## Back&Refine Technique during Inference
 
+Khác với các mô hình AR vốn có sự phụ thuộc tuần tự rõ ràng giữa các tokens, mô hình diffusion cho ra tất cả các tokens một cách song song. Một số token chẳng hạn như các đối tượng chính trong ảnh, có thể dễ dàng khôi phục. Ngược lại, mốt số token thể hiện chi tiết hình ảnh sẽ gặp khó khăn trong việc khôi phục. Do đó việc thêm nhiễu cùng scale vào token dễ  khôi phục là không hợp lý và không hiệu quả. Do đó, về mặt trực quan, chúng ta có thể tận dụng các token dễ dàng được khôi phục này làm điều kiện để hỗ trợ quá trình sàng lọc những token khó khôi phục hơn.
 
+Theo đó, tác giả đề xuất phương pháp Back&Refine để khôi phục và tinh chỉnh các challenging token (độ tự tin dự đoán thấp).
+
+![alt text](image.png)
+
+coi L/2 tokens có độ tự tin cao nhất là dễ khôi phục
+
+tái tạo L/2 khó khôi phục còn lại bằng nhiễu (complete Gaussian noise)
+
+đặt lại t = T và bắt đầu một quá trình khử nhiễu mới để khôi phục challenging tokens based on the easier ones
+
+Khi sử dụng phương pháp này, chúng ta quan sát được hiệu năng tăng
+
+Nếu phương pháp này có hiệu quả, có ý tưởng nào tương tự cho kết quả tốt hơn không??
+
+# Experiments
+
+## Experimental Settings
+
+### Dataset and Metrics
+
+MS COCO Karpathy split: 
+
+- 113287 training images
+
+- 5000 validation images
+
+- 5000 test images
+
+- mỗi ảnh có 5 chú thích tham khảo
+
+Metrics:
+
+- BLUE@4
+
+- CIDEr-D
+
+- METEOR
+
+- ROUGE-L
+
+- SPICE
+
+- CLIP-Score để đánh giá sự liên kết ngữ nghĩa giữa chú thích và hình ảnh được tạo
+
+- BERT-Score để đánh giá chất lượng văn bản
+
+### Implementation Details
+
+encoder và decoder được đóng bằng, trừ LM-head. Trọng số của encoder và decoder được lấy từ 6 layer đầu tiên và 6 layers cuối cùng của BERT-base.
+
+cơ sở lý luận để chọn không gian tiềm ẩn:
+
+
+## Quantitative Analysis
+
+## Case Study and Human Evaluation
+
+## Unleashing the Speed of Diffusion Model
+
+## Customizing the Generation Process
+
+## Analysis for the Back&Refine Technique
+
+## Ablation study
 
